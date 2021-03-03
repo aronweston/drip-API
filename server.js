@@ -6,6 +6,7 @@ import cors from 'cors';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import roasterRoutes from './routes/roasterRoutes.js';
+import { createUser } from './controllers/userController.js';
 
 //Init & Config
 const server = express();

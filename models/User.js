@@ -8,7 +8,8 @@ const userSchema = new Schema(
     email: {
       type: String,
       minlength: [6, 'Minimum length of email must be 6 characters'],
-      unique: true,
+      unique: [true, 'Email already exists. Please try another email'],
+      match: /.+\@.+\..+/,
       required: true,
     },
     password: {
