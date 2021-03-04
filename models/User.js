@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 // import validate from 'mongoose-validator';
 
 const { Schema } = mongoose;
@@ -64,29 +65,24 @@ const userSchema = new Schema(
   }
 );
 
-// const postCodeValidator = validate({
-//   validator: 'isPostcode',
-//   arguments: ['AU', validator.loca],
-//   message: 'Please enter a valid postcode.',
-// });
+userSchema.methods.checkPassword = async function (candidate) {
+  try {
+    return await bcrypt.compare(candidate, this.password);
+  } catch (err) {
+    console.log(error);
+  }
+};
+
+//HASH PASSWORD
+userSchema.pre('save', async function (next) {
+  //only hash the password if the password is being changed
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 const User = mongoose.model('User', userSchema);
 
 export default User;
-
-// code: {
-// type: String,
-// required: [true, 'Code required'],
-// //sync validation
-// validate: {
-// validator: function (v) {
-// //regex product code must have XXXX-XXXX-XXXX format
-// //return true to pass the validation
-// //return false to fail the validation
-// return (/\d{4}-\d{4}-\d{4}/.test(v));
-// },
-// //message to return if validation fails
-// message: props => `${props.value} is not a valid code format!`
-// },
-// required: [true, 'Code required']
-// }

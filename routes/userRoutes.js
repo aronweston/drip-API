@@ -4,15 +4,19 @@ import {
   authUser,
   createUser,
   getAllUsers,
+  getUserProfile,
   getUserById,
   updateUserById,
 } from '../controllers/userController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
-router.route('/').get(getAllUsers).post(createUser);
-router.route('/:id').get(getUserById);
-router.route('/profile/:id').put(updateUserById);
-router.route('/auth').post(authUser);
+//PUBLIC
+router.route('/new').post(createUser);
+router.post('/login', authUser);
 
-// router.route('/profile').get();
+// PRIVATE
+router.route('/').get(protect, getAllUsers);
+router.route('/:id').get(protect, getUserById);
+router.route('/profile').get(protect, getUserProfile);
 
 export default router;

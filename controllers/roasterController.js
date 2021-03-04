@@ -62,6 +62,6 @@ export const getRoasterById = asyncHandler(async (req, res) => {
   } else {
     console.log('GET /roasters/:id'.red.inverse);
     res.status(404);
-    throw new Error(roasters.error);
+    throw new Error('Roaster not found');
   }
 });
