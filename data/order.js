@@ -1,11 +1,10 @@
 const order = [
   {
-    _id: '',
-    roaster: '',
     user: '',
+    roaster: '',
     isPaid: false,
-    paidAt: '',
     isDelivered: false,
+    paidAt: '',
     deliveredAt: '',
     taxCharged: '',
     cart: [

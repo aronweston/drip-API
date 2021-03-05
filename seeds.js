@@ -7,6 +7,8 @@ import Roaster from './models/Roaster.js';
 import roasters from './data/roasters.js';
 import Coffee from './models/Coffee.js';
 import coffee from './data/coffee.js';
+import Order from './models/Order.js';
+import order from './data/order.js';
 dotenv.config();
 connectDB();
 
@@ -16,10 +18,13 @@ const seedData = async () => {
     await User.deleteMany();
     await Roaster.deleteMany();
     await Coffee.deleteMany();
+    await Order.deleteMany();
 
     await User.insertMany(users);
     await Roaster.insertMany(roasters);
     await Coffee.insertMany(coffee);
+    await Order.insertMany(orders);
+
     console.log('Seed successful'.green.inverse);
     process.exit(); // exit no error;
   } catch (error) {

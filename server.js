@@ -7,6 +7,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import roasterRoutes from './routes/roasterRoutes.js';
 import coffeeRoutes from './routes/coffeeRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 //Init & Config
 const server = express();
@@ -25,6 +26,7 @@ server.get('/', (req, res) => {
 server.use('/users/', userRoutes);
 server.use('/roasters/', roasterRoutes);
 server.use('/coffee/', coffeeRoutes);
+server.use('/order/', orderRoutes);
 
 //404 & Error Middleware
 server.use(notFound);
