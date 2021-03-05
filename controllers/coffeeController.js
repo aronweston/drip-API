@@ -82,37 +82,39 @@ export const createCoffee = asyncHandler(async (req, res) => {
   }
 });
 
-// //@desc UPDATE: Update a specific roaster
-// //@route PUT /roaster/update
-// //@access PRIVATE
+//@desc UPDATE: Update a coffee
+//@route PUT /coffee/:id
+//@access PRIVATE
 
-// export const updateRoaster = asyncHandler(async (req, res) => {
-//   try {
-//     const roaster = await Roaster.findOneAndUpdate(
-//       { _id: req.params.id },
-//       req.body,
-//       { new: true }
-//     );
-//     res.json(roaster);
-//     console.log(`PUT /roasters/${req.params.id}`.green.inverse);
-//   } catch (error) {
-//     console.log('PUT /roasters/:id'.red.inverse, error);
-//     res.status(404);
-//     throw new Error('Roaster not found');
-//   }
-// });
+export const updateCoffee = asyncHandler(async (req, res) => {
+  try {
+    const coffee = await Coffee.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    );
+    res.json(coffee);
+  } catch (error) {
+    res.status(404);
+    throw new Error('Coffee not found');
+  }
+});
 
-// //@desc UPDATE: Update a specific roaster
-// //@route PUT /roaster/update
-// //@access PRIVATE
-// export const removeRoaster = asyncHandler(async (req, res) => {
-//   try {
-//     await Roaster.findByIdAndDelete({ _id: req.params.id });
-//     res.json('Roaster removed');
-//     console.log(`DELETE /roasters/${req.params.id}`.green.inverse);
-//   } catch (error) {
-//     console.log('DELETE /roasters/:id'.red.inverse, error);
-//     res.status(404);
-//     throw new Error('Roaster not found');
-//   }
-// });
+//@desc UPDATE: Update a specific roaster
+//@route PUT /roaster/update
+//@access PRIVATE
+export const removeCoffee = asyncHandler(async (req, res) => {
+  try {
+    const coffee = await Coffee.findById({ _id: req.params.id });
+    if (coffee) {
+      coffee.remove();
+      res.json('Coffee deleted');
+    } else {
+      res.status(404);
+      throw new Error('Coffee not found');
+    }
+  } catch (error) {
+    res.status(404);
+    throw new Error('Coffee not found');
+  }
+});
