@@ -20,6 +20,9 @@ const roasterSchema = new Schema(
       type: String,
       required: true,
     },
+    coffee: {
+      type: Array,
+    },
   },
   {
     timestamps: true,

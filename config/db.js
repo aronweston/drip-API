@@ -7,6 +7,7 @@ export const connectDB = async () => {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true,
+      useFindAndModify: false,
     });
     console.log(`Mongo Connected ${connection.connection.host}`.green);
   } catch (error) {
