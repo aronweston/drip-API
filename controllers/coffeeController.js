@@ -39,30 +39,42 @@ export const getCoffeeById = asyncHandler(async (req, res) => {
 // @access PRIVATE
 export const createCoffee = asyncHandler(async (req, res) => {
   try {
-    const { title, price, roaster } = req.body;
+    const { title, price, roaster: roasterID } = req.body;
+
+    const roaster = await Roaster.findById(roasterID);
+
+    // Check if the product already exists under the product name
+    const productFound = roaster.products.find((p) => title === p.title);
+
+    console.log(productFound);
+
+    if (productFound) {
+      res.status(400);
+      throw new Error('Product already exists');
+    }
 
     const coffee = await Coffee.create({
       title,
       price,
-      roaster,
+      roaster: roasterID,
+    });
+
+    roaster.products.push({
+      _id: coffee.id,
+      title: coffee.title,
+      price: coffee.price,
     });
 
     if (coffee) {
+      roaster.save();
+      console.log(roaster);
+
       res.status(201).json({
         _id: coffee.id,
         title: coffee.title,
         price: coffee.price,
-        roaster: coffee.roaster,
+        roasterID: coffee.roaster,
       });
-
-      const getRoaster = await Roaster.findById(roaster);
-      getRoaster.coffee.push({
-        _id: coffee.id,
-        title: coffee.title,
-        price: coffee.price,
-      });
-      getRoaster.save();
-      console.log(getRoaster);
     }
   } catch (error) {
     res.status(400);
