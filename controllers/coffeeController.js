@@ -9,13 +9,15 @@ import Roaster from '../models/Roaster.js';
 // @access PUBLIC
 
 export const getAllCoffee = asyncHandler(async (req, res) => {
-  try {
-    const coffee = await Coffee.find({});
-    if (coffee) res.json(coffee);
-  } catch (error) {
-    console.log('GET /coffee'.red.inverse, error);
+  const coffee = await Coffee.find({}).populate(
+    'roaster',
+    'name about logo location'
+  );
+  if (coffee.length > 0) {
+    res.json(coffee);
+  } else {
     res.status(404);
-    throw new Error('coffee not found');
+    throw new Error('No Coffee Found');
   }
 });
 
@@ -24,11 +26,13 @@ export const getAllCoffee = asyncHandler(async (req, res) => {
 // @access PUBLIC
 
 export const getCoffeeById = asyncHandler(async (req, res) => {
-  try {
-    const coffee = await Coffee.findById(req.params.id);
-    if (coffee) res.json(coffee);
-  } catch (error) {
-    console.log('GET /coffees/:id'.red.inverse, error);
+  const coffee = await Coffee.findById(req.params.id).populate(
+    'roaster',
+    'name about logo location products'
+  );
+  if (coffee) {
+    res.json(coffee);
+  } else {
     res.status(404);
     throw new Error('coffee not found');
   }
@@ -39,30 +43,35 @@ export const getCoffeeById = asyncHandler(async (req, res) => {
 // @access PRIVATE
 export const createCoffee = asyncHandler(async (req, res) => {
   try {
-    const { title, price, roaster: roasterID } = req.body;
+    const { title, price, roaster: roasterID, stockQty } = req.body;
 
     const roaster = await Roaster.findById(roasterID);
 
-    // Check if the product already exists under the product name
-    const productFound = roaster.products.find((p) => title === p.title);
-
-    console.log(productFound);
-
-    if (productFound) {
-      res.status(400);
-      throw new Error('Product already exists');
+    if (roaster) {
+      // Check if the product already exists under the product name
+      const productFound = roaster.products.find((p) => title === p.title);
+      console.log(productFound);
+      if (productFound) {
+        res.status(400);
+        throw new Error('Product already exists');
+      }
+    } else {
+      res.status(404);
+      throw new Error('Roaster does not exist');
     }
 
     const coffee = await Coffee.create({
       title,
       price,
       roaster: roasterID,
+      stockQty,
     });
 
     roaster.products.push({
       _id: coffee.id,
       title: coffee.title,
       price: coffee.price,
+      stockQty: coffee.stockQty,
     });
 
     if (coffee) {
@@ -73,7 +82,8 @@ export const createCoffee = asyncHandler(async (req, res) => {
         _id: coffee.id,
         title: coffee.title,
         price: coffee.price,
-        roasterID: coffee.roaster,
+        roaster: coffee.roaster,
+        stockQty: coffee.stockQty,
       });
     }
   } catch (error) {
@@ -100,15 +110,21 @@ export const updateCoffee = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc UPDATE: Update a specific roaster
-//@route PUT /roaster/update
-//@access PRIVATE
+//@desc  Delete a coffee and all coffees from the Roaster schema
+//@route DELETE /coffee/:id
+//@access PRIVATE(ADMIN)
 export const removeCoffee = asyncHandler(async (req, res) => {
   try {
-    const coffee = await Coffee.findById({ _id: req.params.id });
-    if (coffee) {
+    const coffee = await Coffee.findById(req.params.id);
+    const roaster = await Roaster.findById(coffee.roaster._id);
+    if (coffee && roaster.products.length > 0) {
+      const newProducts = roaster.products.filter(
+        (c) => String(c._id) !== String(coffee._id)
+      );
+      roaster.products = newProducts;
+      roaster.save();
       coffee.remove();
-      res.json('Coffee deleted');
+      res.json({ c: coffee, new: newProducts, r: roaster });
     } else {
       res.status(404);
       throw new Error('Coffee not found');

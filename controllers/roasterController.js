@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Roaster from '../models/Roaster.js';
+import Coffee from '../models/Coffee.js';
 
 // @desc  CREATE: Create a roaster
 // @route POST /roaster
@@ -78,14 +79,16 @@ export const updateRoaster = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc UPDATE: Update a specific roaster
-//@route PUT /roaster/update
-//@access PRIVATE
+//@desc DELETE: Remove a roaster and all of it's coffees
+//@route PUT /roaster/:id
+//@access PRIVATE(ADMIN)
 export const removeRoaster = asyncHandler(async (req, res) => {
-  try {
-    await Roaster.findByIdAndDelete({ _id: req.params.id });
-    res.json('Roaster removed');
-  } catch (error) {
+  const roaster = await Roaster.findById(req.params.id);
+  if (roaster) {
+    await Coffee.deleteMany({ roaster: roaster._id });
+    roaster.remove();
+    res.json('Roaster and coffee removed');
+  } else {
     res.status(404);
     throw new Error('Roaster not found');
   }

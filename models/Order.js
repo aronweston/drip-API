@@ -3,26 +3,28 @@ const { Schema } = mongoose;
 
 const orderSchema = new Schema(
   {
-    name: {
-      type: String,
-      unique: true,
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
       required: true,
     },
-    about: {
-      type: String,
+    totalPrice: {
+      type: Number,
       required: true,
+      default: 0.0,
     },
-    logo: {
-      type: String,
-      required: true,
-    },
-    location: {
-      type: String,
-      required: true,
-    },
-    products: {
-      type: Array,
-    },
+    cartItems: [
+      {
+        title: { type: String, required: true },
+        qty: { type: Number, required: true },
+        price: { type: Number, required: true },
+        coffee: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'Coffee',
+        },
+      },
+    ],
   },
   {
     timestamps: true,

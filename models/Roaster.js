@@ -22,6 +22,7 @@ const roasterSchema = new Schema(
     },
     products: {
       type: Array,
+      required: true,
     },
   },
   {

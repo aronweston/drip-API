@@ -1,40 +1,32 @@
 const order = [
   {
     user: '',
-    roaster: '',
-    isPaid: false,
-    isDelivered: false,
-    paidAt: '',
-    deliveredAt: '',
     taxCharged: '',
-    cart: [
+    totalPrice: '',
+    orderItems: [
       {
-        name: '',
-        qty: '',
-        image: '',
-        price: '',
         coffee: '',
+        roaster: '',
+        name: '',
+        qty: '2',
+        price: '10',
+      },
+      {
+        coffee: '',
+        roaster: '',
+        name: '',
+        qty: '1',
+        price: '10',
+      },
+      {
+        coffee: '',
+        roaster: '',
+        name: '',
+        qty: '1',
+        price: '10',
       },
     ],
-    totalPrice: '',
-    weight: '',
-    postal: {
-      address: {
-        line1: '',
-        line2: '',
-      },
-      code: '',
-      suburb: '',
-      state: '',
-    },
-    billing: {
-      address: {
-        line1: '',
-        line2: '',
-      },
-      code: '',
-      suburb: '',
-      state: '',
-    },
   },
 ];
+
+export default order;

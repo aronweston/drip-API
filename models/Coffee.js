@@ -6,7 +6,6 @@ const coffeeSchema = new Schema(
     roaster: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Roaster',
-      required: [true, 'A roaster is required'],
     },
     title: {
       type: String,
@@ -15,6 +14,11 @@ const coffeeSchema = new Schema(
     price: {
       type: Number,
       required: [true, 'A product price is required'],
+    },
+    stockQty: {
+      type: Number,
+      required: [true, 'A product qty is required'],
+      default: 0,
     },
   },
   {
