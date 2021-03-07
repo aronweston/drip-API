@@ -5,7 +5,7 @@ const roasterSchema = new Schema(
   {
     name: {
       type: String,
-      unique: true,
+      unique: [true, 'Roaster name must be unique'],
       required: true,
     },
     about: {

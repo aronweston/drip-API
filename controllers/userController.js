@@ -3,6 +3,11 @@ import colors from 'colors';
 import User from '../models/User.js';
 import asyncHandler from 'express-async-handler';
 import { genToken } from '../utils/genToken.js';
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 // @desc  LOGIN: Auth user
 // @route POST /users/auth
@@ -44,9 +49,14 @@ export const createUser = asyncHandler(async (req, res) => {
       throw new Error('User already exists');
     }
 
+    const stripeId = await stripe.customers.create({ email });
+
+    console.log(stripeId);
+
     const user = await User.create({
       email,
       password,
+      stripeId: stripeId.id,
     });
 
     if (user) {
@@ -54,13 +64,14 @@ export const createUser = asyncHandler(async (req, res) => {
         _id: user._id,
         email: user.email,
         isAdmin: user.isAdmin,
+        stripeId: user.stripeId,
         password: user.password,
         joined: new Date(user.createdAt).toLocaleDateString(),
       });
     }
   } catch (error) {
     res.status(400);
-    throw new Error(err);
+    throw new Error(error);
   }
 });
 

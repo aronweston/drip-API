@@ -18,6 +18,9 @@ const userSchema = new Schema(
       minlength: [6, 'Minimum length of password must be 6 characters'],
       required: true,
     },
+    stripeId: {
+      type: String,
+    },
     isAdmin: {
       type: Boolean,
       required: true,

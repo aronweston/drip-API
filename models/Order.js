@@ -10,17 +10,22 @@ const orderSchema = new Schema(
     },
     totalPrice: {
       type: Number,
-      required: true,
       default: 0.0,
+    },
+    token: {
+      type: String,
     },
     cartItems: [
       {
-        title: { type: String, required: true },
+        name: { type: String, required: true },
         qty: { type: Number, required: true },
         price: { type: Number, required: true },
+        roaster: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Coffee',
+        },
         coffee: {
           type: mongoose.Schema.Types.ObjectId,
-          required: true,
           ref: 'Coffee',
         },
       },
@@ -28,7 +33,6 @@ const orderSchema = new Schema(
   },
   {
     timestamps: true,
-    collection: 'Order',
   }
 );
 

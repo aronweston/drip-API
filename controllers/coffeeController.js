@@ -13,7 +13,7 @@ export const getAllCoffee = asyncHandler(async (req, res) => {
     'roaster',
     'name about logo location'
   );
-  if (coffee.length > 0) {
+  if (coffee) {
     res.json(coffee);
   } else {
     res.status(404);

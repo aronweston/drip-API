@@ -1,94 +1,117 @@
-import mongoose from 'mongoose';
-import colors from 'colors';
-import Order from '../models/Order.js';
+import Stripe from 'stripe';
 import asyncHandler from 'express-async-handler';
+import dotenv from 'dotenv';
+//models
+import Order from '../models/Order.js';
+import Coffee from '../models/Coffee.js';
+//Stripe
+dotenv.config();
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-// @desc  READ: Get all Orders
-// @route GET /orders
-// @access PUBLIC
-export const getAllOrders = asyncHandler(async (req, res) => {
-  try {
-    const orders = await Order.find({});
-    if (orders) res.json(orders);
-  } catch (error) {
-    res.status(404);
-    console.error(error);
-    throw new Error('Orders not found');
+// @desc  CREATE: Create an order
+// @route POST /orders
+// @access PRIVATE
+export const createOrder = asyncHandler(async (req, res) => {
+  const { cartItems } = req.body;
+
+  if (cartItems.length === 0) {
+    res.status(400);
+    throw new Error('The cart is empty');
+  } else {
+    const order = await Order.create({
+      user: req.user._id,
+      cartItems,
+    });
+
+    if (order) {
+      res.json(order);
+    } else {
+      res.status(400);
+      throw new Error('Order not created');
+    }
   }
 });
 
-// @desc  CREATE: Create user
-// @route POST /users
-// @access PUBLIC
-//TODO: get the error messages for a dup email, wrong format email and incorrect password length to format correctly in the model.
-// export const createUser = asyncHandler(async (req, res) => {
-//   const { email, password } = req.body;
+// @desc  READ: Get  all orders
+// @route POST /orders/:id
+// @access ADMIN
+export const getAllOrders = asyncHandler(async (req, res) => {
+  const order = await Order.find({});
+  if (order) {
+    res.json(order);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+});
 
-//   try {
-//     const userExists = await User.findOne({ email });
+// @desc  READ: Get order by id
+// @route POST /orders/:id
+// @access PRIVATE
+export const getOrderById = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id).populate(
+    'user',
+    'email billing'
+  );
+  if (order) {
+    res.json(order);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+});
 
-//     if (userExists) {
-//       res.status(400);
-//       throw new Error('User already exists');
-//     }
+// @desc  Pay order
+// @route GET /order/pay/:id
+// @access PRIVATE
 
-//     const user = await User.create({
-//       email,
-//       password,
-//     });
+// - get the order id
+// - get the order that is associated with params id
+// - populate with each final price of the orderItems
+// - send that back as an intent
 
-//     if (user) {
-//       res.status(201).json({
-//         _id: user._id,
-//         email: user.email,
-//         isAdmin: user.isAdmin,
-//         password: user.password,
-//         joined: new Date(user.createdAt).toLocaleDateString(),
-//       });
-//     }
-//   } catch (error) {
-//     res.status(400);
-//     throw new Error(err);
-//   }
-// });
+export const orderPay = asyncHandler(async (req, res) => {
+  //send the amount to the server; need to get the order data in here and do the calculations of all the products and quantity in the order and calculate; then set that to the amount as the final price - this is either equal to the front end or not - if not, return an error
+  // const {amount} = req.body
 
-// // @desc  UPDATE: Update a user profile
-// // @route PUT /users/:id
-// // @access PUBLIC
-// export const updateUserById = asyncHandler(async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     if (user) {
-//       user.email = req.body.email || user.email;
-//       if (req.body.password) user.password = req.body.password;
+  // const order = await Order.findById(req.params.id).populate(
+  //   'user',
+  //   'email stripeId'
+  // );
 
-//       const updatedUser = await user.save();
+  // if (!order) {
+  //   res.status(404);
+  //   throw new Error('Order not found');
+  // }
 
-//       res.json({
-//         _id: updatedUser._id,
-//         email: updatedUser.email,
-//         isAdmin: updatedUser.isAdmin,
-//         password: updatedUser.passwordDigest, //remove this later
-//         joined: new Date(updatedUser.createdAt).toLocaleDateString(),
-//       });
-//     }
-//   } catch (error) {
-//     res.status(404);
-//     console.error(error);
-//     throw new Error('User not updated');
-//   }
-// });
+  // TODO: check if the customer exists on stripe
+  // let customer = await stripe.customers.retrieve(stripeId);
+  // if (!customer) {
+  //   customer = await stripe.customers.create({
+  //     email: token.email,
+  //     source: token.id,
+  //   });
 
-// // @desc  Get user by ID
-// // @route GET /users/:id
-// // @access PUBLIC
-// export const getUserById = asyncHandler(async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     if (user) res.json(user);
-//   } catch (error) {
-//     res.status(404);
-//     console.error(error);
-//     throw new Error('User not found');
-//   }
-// });
+  //returns a client secret for this particular order
+  const charge = await await stripe.paymentIntents.create({
+    amount: 1099,
+    currency: 'aud',
+    // receipt_email: order.user.email,
+    // customer: order.user.stripeId,
+    metadata: {
+      integration_check: 'accept_a_payment',
+      // order_id: order._id,
+    },
+    // idempotencyKey: order._id,
+    statement_descriptor: 'drip coffee',
+  });
+
+  console.log(charge);
+
+  if (charge) {
+    res.status(201).json({ client_secret: charge.client_secret });
+  } else {
+    res.status(400);
+    throw new Error('Payment error');
+  }
+});
