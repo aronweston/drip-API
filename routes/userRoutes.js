@@ -11,7 +11,7 @@ import {
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 //PUBLIC
-router.route('/register').post(createUser);
+router.route('/api/register').post(createUser);
 router.post('/login', authUser);
 
 // PRIVATE
