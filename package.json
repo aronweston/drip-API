@@ -1,6 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "engines": {
+   "node": "15.7.0"
+  },
   "description": "",
   "main": "server.js",
   "type": "module",
@@ -8,10 +11,6 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "seed": "node seeds.js"
-
-  },
-  "engines": {
-    "node": "15.x"
   },
   "keywords": [],
   "author": "",
