@@ -34,8 +34,7 @@ server.use(notFound);
 server.use(errorHandler);
 
 //Port & Listen
-const PORT = process.env.PORT || 5001;
-server.listen(PORT);
+server.listen(process.env.PORT || 5000);
 console.log(
   `Server is running ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
 );
