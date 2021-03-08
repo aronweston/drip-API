@@ -23,10 +23,6 @@ const orderSchema = new Schema(
     reference: {
       type: String,
     },
-    // client_secret: {
-    //   type: String,
-    //   required: true,
-    // },
     cartItems: [
       {
         name: { type: String, required: true },

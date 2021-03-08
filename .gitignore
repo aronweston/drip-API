@@ -5,3 +5,7 @@ node_modules/
 .env
 *.env.DS_STORE
 .DS_STORE
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env
