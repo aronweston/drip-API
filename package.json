@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "seed": "node seeds.js"
+
   },
   "engines": {
     "node": "15.x"
