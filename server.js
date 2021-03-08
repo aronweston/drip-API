@@ -36,10 +36,10 @@ server.use('/order/', orderRoutes);
 server.use(notFound);
 server.use(errorHandler);
 
-server.listen(process.env.PORT);
+//Port & Listen
 
-// //Port & Listen
-// server.listen(PORT);
-// console.log(
-//   `Server is running ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
-// );
+server.listen(process.env.PORT);
+console.log(
+  `Server is running ${process.env.NODE_ENV} mode on ${process.env.PORT}`.yellow
+    .bold
+);
