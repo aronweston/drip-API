@@ -12,8 +12,8 @@ import orderRoutes from './routes/orderRoutes.js';
 
 //Init & Config
 const server = express();
-connectDB();
 dotenv.config();
+connectDB();
 server.use(cors());
 server.use(express.json());
 
