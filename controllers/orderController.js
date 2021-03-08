@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 //models
 import Order from '../models/Order.js';
 import Coffee from '../models/Coffee.js';
+import User from '../models/User.js';
+
 //Stripe
 dotenv.config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -39,10 +41,10 @@ export const createOrder = asyncHandler(async (req, res) => {
     //CREATE ORDER
     const order = await Order.create({
       user: req.user._id,
-      delivery,
-      billing,
       totalPrice,
       cartItems,
+      delivery,
+      billing,
     });
 
     if (order) {
@@ -57,31 +59,35 @@ export const createOrder = asyncHandler(async (req, res) => {
 // @desc  Successful payment
 // @route POST /order/success
 // @access PRIVATE
-
 export const paymentSuccess = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.body._id);
-  //set is paid to true
-  order.isPaid = true;
-  const id = String(order.id);
-  order.reference = id.substring(0, 4) + id.substring(id.length - 4, id.length);
-  order.save();
+  const order = await Order.findById(req.body.id);
+  if (order) {
+    //set is paid to true
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    const id = String(order._id);
+    order.reference =
+      id.substring(0, 4) + id.substring(id.length - 4, id.length);
+    order.save();
 
-  //Subtract quantity from stock
-  const coffeeData = order.cartItems.map(({ coffee, qty }) => [coffee, qty]);
-  for (let i = 0; i < coffeeData.length; i++) {
-    let coffee = await Coffee.findOne({ _id: coffeeData[i][0] });
-    let qty = coffeeData[i][1];
-    coffee.stockQty -= qty;
-    coffee.save();
+    //Subtract quantity from stock
+    const coffeeData = order.cartItems.map(({ coffee, qty }) => [coffee, qty]);
+    for (let i = 0; i < coffeeData.length; i++) {
+      const coffee = await Coffee.findOne({ _id: coffeeData[i][0] });
+      const qty = coffeeData[i][1];
+      coffee.stockQty -= qty;
+      coffee.save();
+    }
+
+    res.status(201).json(order);
+  } else {
+    res.status(401);
+    throw new Error('Order not found');
   }
-
-  order.populate('');
-
-  res.json(order);
 });
 
 // @desc  Pay order
-// @route GET /order/pay/:id
+// @route POST /order/pay/:id
 // @access PRIVATE
 export const orderPay = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
@@ -89,12 +95,16 @@ export const orderPay = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Order not found');
   }
+
   //FIND STRIPE USER
-  const customer = await stripe.customers.retrieve(req.user.stripeId);
-  if (!req.user.stripeId) {
-    res.status(404);
-    throw new Error('Stripe user not found');
-  }
+  const user = await User.findById('60443be1449521362370fa9b');
+
+  const customer = await stripe.customers.retrieve(user.stripeId);
+  // const customer = await stripe.customers.retrieve(req.user.stripeId);
+  // if (!req.user.stripeId) {
+  //   res.status(404);
+  //   throw new Error('Stripe user not found');
+  // }
 
   const { totalPrice, id, delivery } = order;
 
@@ -125,7 +135,6 @@ export const orderPay = asyncHandler(async (req, res) => {
   });
 
   if (order) {
-    console.log(order);
     res.status(201).json(paymentIntent.client_secret);
   } else {
     res.status(400);
@@ -133,7 +142,7 @@ export const orderPay = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc  READ: Get all orders
+// @desc  Get all orders
 // @route GET /orders
 // @access ADMIN
 export const getAllOrders = asyncHandler(async (req, res) => {
@@ -146,8 +155,8 @@ export const getAllOrders = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc  READ: Get order by id
-// @route POST /orders/:id
+// @desc  Get order by id
+// @route GET /orders/:id
 // @access PRIVATE
 export const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(

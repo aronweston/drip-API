@@ -17,10 +17,11 @@ const orderSchema = new Schema(
       default: false,
       required: true,
     },
+    paidAt: {
+      type: String,
+    },
     reference: {
       type: String,
-      default: '',
-      required: true,
     },
     // client_secret: {
     //   type: String,
