@@ -12,12 +12,12 @@ import orderRoutes from './routes/orderRoutes.js';
 
 //Init & Config
 const server = express();
-dotenv.config();
 connectDB();
 server.use(cors());
 server.use(express.json());
 
 if (process.env.NODE_ENV === 'development') {
+  dotenv.config();
   server.use(morgan('dev'));
 }
 
@@ -38,8 +38,16 @@ server.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-//Port & Listen
-server.listen(PORT);
-console.log(
-  `Server is running ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
-);
+server.listen(PORT, function () {
+  console.log(
+    'Express server listening on port %d in %s mode',
+    this.address().port,
+    app.settings.env
+  );
+});
+
+// //Port & Listen
+// server.listen(PORT);
+// console.log(
+//   `Server is running ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
+// );
