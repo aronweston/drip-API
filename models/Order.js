@@ -12,9 +12,20 @@ const orderSchema = new Schema(
       type: Number,
       default: 0.0,
     },
-    token: {
-      type: String,
+    isPaid: {
+      type: Boolean,
+      default: false,
+      required: true,
     },
+    reference: {
+      type: String,
+      default: '',
+      required: true,
+    },
+    // client_secret: {
+    //   type: String,
+    //   required: true,
+    // },
     cartItems: [
       {
         name: { type: String, required: true },
@@ -30,6 +41,76 @@ const orderSchema = new Schema(
         },
       },
     ],
+    billing: {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: false,
+      },
+      phone: {
+        type: String,
+        required: false,
+      },
+      line_1: {
+        type: String,
+        required: true,
+      },
+      line_2: {
+        type: String,
+        required: false,
+      },
+      suburb: {
+        type: String,
+        required: true,
+      },
+      state: {
+        type: String,
+        // enum: ['NSW', 'QLD', 'ACT', 'NT', 'WA', 'TAS'],
+        required: true,
+      },
+      postCode: {
+        type: String,
+        required: true,
+      },
+    },
+    delivery: {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: false,
+      },
+      phone: {
+        type: String,
+        required: false,
+      },
+      line_1: {
+        type: String,
+        required: true,
+      },
+      line_2: {
+        type: String,
+        required: false,
+      },
+      suburb: {
+        type: String,
+        required: true,
+      },
+      state: {
+        type: String,
+        // enum: ['NSW', 'QLD', 'ACT', 'NT', 'WA', 'TAS'],
+        required: true,
+      },
+      postCode: {
+        type: String,
+        required: true,
+      },
+    },
   },
   {
     timestamps: true,

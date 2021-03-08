@@ -6,6 +6,10 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       minlength: [6, 'Minimum length of email must be 6 characters'],
@@ -20,6 +24,7 @@ const userSchema = new Schema(
     },
     stripeId: {
       type: String,
+      required: true,
     },
     isAdmin: {
       type: Boolean,
@@ -39,11 +44,46 @@ const userSchema = new Schema(
         type: String,
         required: false,
       },
-      address_line_1: {
+      line_1: {
         type: String,
         required: false,
       },
-      address_line_2: {
+      line_2: {
+        type: String,
+        required: false,
+      },
+      suburb: {
+        type: String,
+        required: false,
+      },
+      state: {
+        type: String,
+        // enum: ['NSW', 'QLD', 'ACT', 'NT', 'WA', 'TAS'],
+        required: false,
+      },
+      postCode: {
+        type: String,
+        required: false,
+      },
+    },
+    delivery: {
+      firstName: {
+        type: String,
+        required: false,
+      },
+      lastName: {
+        type: String,
+        required: false,
+      },
+      phone: {
+        type: String,
+        required: false,
+      },
+      line_1: {
+        type: String,
+        required: false,
+      },
+      line_2: {
         type: String,
         required: false,
       },
