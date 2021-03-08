@@ -23,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 
 //server start
 server.get('/', (req, res) => {
+  res.json('API is running');
   res.send('server is running');
 });
 
