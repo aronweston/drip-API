@@ -16,7 +16,10 @@ dotenv.config();
 connectDB();
 server.use(cors());
 server.use(express.json());
-server.use(morgan('dev'));
+
+if (process.env.NODE_ENV === 'development') {
+  server.use(morgan('dev'));
+}
 
 //server start
 server.get('/', (req, res) => {
@@ -33,8 +36,10 @@ server.use('/order/', orderRoutes);
 server.use(notFound);
 server.use(errorHandler);
 
+const PORT = process.env.PORT || 5000;
+
 //Port & Listen
-server.listen(process.env.PORT || 5000);
+server.listen(PORT);
 console.log(
   `Server is running ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
 );
