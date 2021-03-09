@@ -21,11 +21,15 @@ export const authUser = asyncHandler(async (req, res) => {
 
     if (!user) {
       res.status(404);
-      throw new Error('User does not exist');
+      throw new Error('Incorrect password or email');
     }
 
-    if (user && (await user.checkPassword(password))) {
-      res.json({
+    const checkPassword = await user.checkPassword(password);
+    if (!checkPassword) {
+      res.status(401);
+      throw new Error('Incorrect password or email');
+    } else {
+      res.status(201).json({
         _id: user._id,
         name: user.name,
         email: user.email,
