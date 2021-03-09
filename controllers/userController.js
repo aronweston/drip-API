@@ -17,6 +17,14 @@ export const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    if (!email) {
+      res.status(401);
+      throw new Error('Email is required');
+    } else if (!password) {
+      res.status(401);
+      throw new Error('Email is required');
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
