@@ -18,6 +18,12 @@ export const authUser = asyncHandler(async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404);
+      throw new Error('User does not exist');
+    }
+
     if (user && (await user.checkPassword(password))) {
       res.json({
         _id: user._id,
