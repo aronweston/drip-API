@@ -90,7 +90,7 @@ export const paymentSuccess = asyncHandler(async (req, res) => {
 // @access PRIVATE
 export const orderPay = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
-  const { totalPrice, id, delivery, user } = order;
+  const { totalPrice, id, delivery, userId } = order;
 
   if (!order) {
     res.status(404);
@@ -98,7 +98,7 @@ export const orderPay = asyncHandler(async (req, res) => {
   }
 
   //GET USER FROM ORDER
-  const user = await User.findById(user);
+  const user = await User.findById(userId);
 
   //FIND STRIPE USER
   const customer = await stripe.customers.retrieve(user.stripeId);
