@@ -45,22 +45,6 @@ const roasters = [
       'https://i.pinimg.com/originals/cf/9f/36/cf9f361b26c1164d19e795e71a62a0cc.png',
     location: 'VIC',
   },
-  {
-    name: 'Matinee Coffee',
-    about:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.',
-    logo:
-      'https://images.squarespace-cdn.com/content/5c6f84fe34c4e297c15872bf/1550812778474-KZ5KX0BN0JBYZVVG2GU9/M_logo2.png?content-type=image%2Fpng',
-    location: 'NSW',
-  },
-  {
-    name: 'Forsyth Coffee',
-    about:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.',
-    logo:
-      'https://cdn.shopify.com/s/files/1/1007/8794/files/logo-black_x70@2x.png?v=1509001864',
-    location: 'NSW',
-  },
 ];
 
 export default roasters;

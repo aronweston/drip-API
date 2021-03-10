@@ -35,44 +35,10 @@ const orderSchema = new Schema(
         coffee: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Coffee',
+          required: true,
         },
       },
     ],
-    billing: {
-      firstName: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: false,
-      },
-      phone: {
-        type: String,
-        required: false,
-      },
-      line_1: {
-        type: String,
-        required: true,
-      },
-      line_2: {
-        type: String,
-        required: false,
-      },
-      suburb: {
-        type: String,
-        required: true,
-      },
-      state: {
-        type: String,
-        // enum: ['NSW', 'QLD', 'ACT', 'NT', 'WA', 'TAS'],
-        required: true,
-      },
-      postCode: {
-        type: String,
-        required: true,
-      },
-    },
     delivery: {
       firstName: {
         type: String,

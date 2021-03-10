@@ -7,7 +7,6 @@ import Roaster from '../models/Roaster.js';
 // @desc  READ: Get all coffee
 // @route GET /coffee
 // @access PUBLIC
-
 export const getAllCoffee = asyncHandler(async (req, res) => {
   const coffee = await Coffee.find({}).populate(
     'roaster',
@@ -24,7 +23,6 @@ export const getAllCoffee = asyncHandler(async (req, res) => {
 // @desc  READ: Get a specific roaster
 // @route GET /coffee/:id
 // @access PUBLIC
-
 export const getCoffeeById = asyncHandler(async (req, res) => {
   const coffee = await Coffee.findById(req.params.id).populate(
     'roaster',
@@ -43,7 +41,16 @@ export const getCoffeeById = asyncHandler(async (req, res) => {
 // @access PRIVATE
 export const createCoffee = asyncHandler(async (req, res) => {
   try {
-    const { title, price, roaster: roasterID, stockQty } = req.body;
+    const {
+      title,
+      price,
+      image,
+      grams,
+      description,
+      tastesLike,
+      roaster: roasterID,
+      stockQty,
+    } = req.body;
 
     const roaster = await Roaster.findById(roasterID);
 
@@ -63,6 +70,10 @@ export const createCoffee = asyncHandler(async (req, res) => {
     const coffee = await Coffee.create({
       title,
       price,
+      image,
+      grams,
+      description,
+      tastesLike,
       roaster: roasterID,
       stockQty,
     });
@@ -72,18 +83,24 @@ export const createCoffee = asyncHandler(async (req, res) => {
       title: coffee.title,
       price: coffee.price,
       stockQty: coffee.stockQty,
+      tastesLike: coffee.tastesLike,
+      image: coffee.image,
+      grams: coffee.grams,
+      description: coffee.description,
     });
 
     if (coffee) {
       roaster.save();
-      console.log(roaster);
-
       res.status(201).json({
         _id: coffee.id,
         title: coffee.title,
         price: coffee.price,
         roaster: coffee.roaster,
         stockQty: coffee.stockQty,
+        tastesLike: coffee.tastesLike,
+        image: coffee.image,
+        grams: coffee.grams,
+        description: coffee.description,
       });
     }
   } catch (error) {

@@ -14,7 +14,7 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 // @route POST /orders
 // @access PRIVATE
 export const createOrder = asyncHandler(async (req, res) => {
-  const { cartItems, totalPrice, delivery, billing } = req.body;
+  const { cartItems, totalPrice, delivery } = req.body;
 
   if (cartItems.length === 0) {
     res.status(400);
@@ -44,7 +44,6 @@ export const createOrder = asyncHandler(async (req, res) => {
       totalPrice,
       cartItems,
       delivery,
-      billing,
     });
 
     if (order) {
@@ -91,22 +90,19 @@ export const paymentSuccess = asyncHandler(async (req, res) => {
 // @access PRIVATE
 export const orderPay = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
+  const { totalPrice, id, delivery } = order;
+
   if (!order) {
     res.status(404);
     throw new Error('Order not found');
   }
 
   //FIND STRIPE USER
-  const user = await User.findById('60443be1449521362370fa9b');
-
-  const customer = await stripe.customers.retrieve(user.stripeId);
-  // const customer = await stripe.customers.retrieve(req.user.stripeId);
-  // if (!req.user.stripeId) {
-  //   res.status(404);
-  //   throw new Error('Stripe user not found');
-  // }
-
-  const { totalPrice, id, delivery } = order;
+  const customer = await stripe.customers.retrieve(req.user.stripeId);
+  if (!req.user.stripeId) {
+    res.status(404);
+    throw new Error('Stripe user not found');
+  }
 
   // //CREATE A PAYMENT INTENT
   const paymentIntent = await await stripe.paymentIntents.create({
@@ -159,10 +155,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 // @route GET /orders/:id
 // @access PRIVATE
 export const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate(
-    'user',
-    'email billing'
-  );
+  const order = await Order.findById(req.params.id).populate('user', 'email');
   if (order) {
     res.json(order);
   } else {

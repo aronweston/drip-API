@@ -1,9 +1,9 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
-// import { printRoutes } from 'express-list-endpoints';
-import { connectDB } from './config/db.js';
 import cors from 'cors';
+import { connectDB } from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import roasterRoutes from './routes/roasterRoutes.js';
@@ -38,9 +38,9 @@ server.use(notFound);
 server.use(errorHandler);
 
 //Port & Listen
-
-server.listen(process.env.PORT);
-console.log(
-  `Server is running ${process.env.NODE_ENV} mode on ${process.env.PORT}`.yellow
-    .bold
+server.listen(process.env.PORT, () =>
+  console.log(
+    `Server is running ${process.env.NODE_ENV} mode on ${process.env.PORT}`
+      .yellow.bold
+  )
 );

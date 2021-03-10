@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
 export const connectDB = async () => {
   try {
@@ -9,6 +8,7 @@ export const connectDB = async () => {
       useCreateIndex: true,
       useFindAndModify: false,
     });
+
     console.log(`Mongo Connected ${connection.connection.host}`.green);
   } catch (error) {
     console.error(`Error: ${error}`.red.bold);

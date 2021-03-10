@@ -3,22 +3,39 @@ const { Schema } = mongoose;
 
 const coffeeSchema = new Schema(
   {
-    roaster: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Roaster',
-    },
     title: {
       type: String,
-      required: [true, 'A product title is required'],
+      required: true,
     },
     price: {
       type: Number,
-      required: [true, 'A product price is required'],
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    tastesLike: {
+      type: Array,
+      required: true,
+    },
+    grams: {
+      type: Number,
+      required: true,
+      default: 250,
     },
     stockQty: {
       type: Number,
-      required: [true, 'A product qty is required'],
+      required: true,
       default: 0,
+    },
+    roaster: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Roaster',
     },
   },
   {
