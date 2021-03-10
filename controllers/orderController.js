@@ -100,9 +100,14 @@ export const orderPay = asyncHandler(async (req, res) => {
   //GET USER FROM ORDER
   const user = await User.findById(userId);
 
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
   //FIND STRIPE USER
   const customer = await stripe.customers.retrieve(user.stripeId);
-  if (!req.user.stripeId) {
+  if (!user.stripeId) {
     res.status(404);
     throw new Error('Stripe user not found');
   }
@@ -123,7 +128,6 @@ export const orderPay = asyncHandler(async (req, res) => {
           name: `${delivery.firstName} ${delivery.lastName}`,
           address: {
             line1: delivery.line_1,
-            line2: delivery.line_2,
             city: delivery.suburb,
             state: delivery.state,
             postal_code: delivery.postCode,
