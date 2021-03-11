@@ -107,7 +107,8 @@ export const orderPay = asyncHandler(async (req, res) => {
 
   //FIND STRIPE USER
   const customer = await stripe.customers.retrieve(getUser.stripeId);
-  if (!user.stripeId) {
+  console.log(customer);
+  if (!customer) {
     res.status(404);
     throw new Error('Stripe user not found');
   }
